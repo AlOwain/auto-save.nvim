@@ -32,4 +32,8 @@ M.timeout = nil
 -- don't quite catch all the buffers we'd prefer not to write to.
 M.exclude_ft = {}
 
+-- Define some filetypes to always save.
+-- All other file types would not save unless defined here.
+M.include_ft = {}
+
 return M

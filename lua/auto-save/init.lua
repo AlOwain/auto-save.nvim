@@ -13,6 +13,20 @@ local function excluded_ft(filetype)
   return false
 end
 
+---@param filetype string
+---@return boolean
+local function included_ft(filetype)
+  if next(config.include_ft) == nil then
+    return true
+  end
+  for _, v in ipairs(config.include_ft) do
+    if filetype == v then
+      return true
+    end
+  end
+  return false
+end
+
 ---@param bufnr integer
 ---@return boolean
 local function can_save(bufnr)
@@ -20,14 +34,16 @@ local function can_save(bufnr)
   local is_readonly = vim.fn.getbufvar(bufnr, "&readonly") == 1
   local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
   local is_modified = vim.api.nvim_buf_get_option(bufnr, "modified")
-  local valid_ft = not excluded_ft(vim.api.nvim_buf_get_option(bufnr, "filetype"))
+  local excluded = excluded_ft(vim.api.nvim_buf_get_option(bufnr, "filetype"))
+  local included = included_ft(vim.api.nvim_buf_get_option(bufnr, "filetype"))
   local is_named = vim.fn.bufname() ~= ""
 
   return is_modifiable
     and not is_readonly
     and buftype == ""
     and is_modified
-    and valid_ft
+    and included
+    and not excluded
     and is_named
 end
 
@@ -63,6 +79,7 @@ function M.setup(opts)
     config.save_fn = opts.save_fn or config.save_fn
     config.timeout = opts.timeout or config.timeout
     config.exclude_ft = opts.exclude_ft or config.exclude_ft
+    config.include_ft = opts.include_ft or config.include_ft
   end
 
   create_autocmd()
