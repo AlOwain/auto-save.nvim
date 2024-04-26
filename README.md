@@ -95,6 +95,12 @@ require("auto-save").setup({
   -- Define some filetypes to explicitly not save, in case our existing conditions
   -- don't quite catch all the buffers we'd prefer not to write to.
   exclude_ft = {},
+
+  -- Define some filetypes to always save.
+  -- All other file types would not save unless defined here.
+  -- Exclusion has precedence over inclusion, if a file type is excluded,
+  -- it won't be included
+  include_ft = {}
 })
 ```
 
